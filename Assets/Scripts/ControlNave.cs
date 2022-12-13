@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class ControlNave : MonoBehaviour
 {
-    Rigidbody rigidbody;
-    Transform transform;
-    AudioSource audiosource;
+    private Rigidbody rigidbody;
+    private Transform transform;
+    private AudioSource audiosource;
+    
+    public int vida;
+    public float combustible;
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         transform = GetComponent<Transform>();
         audiosource = GetComponent<AudioSource>();
+        
+        vida = 100;
+        combustible = 100.0f;
     }
 
     // Update is called once per frame
@@ -31,36 +37,44 @@ public class ControlNave : MonoBehaviour
             case "ColisionSegura":
                 print("Colision segura...");
                 break;
+            case "ColisionPeligrosa":
+                vida -= 25;
+                break;
             case "Combustible":
-                print("Combustible...");
+                combustible += 25f;
+                combustible = combustible > 100 ? 100 : combustible;
                 break;
             default:
                 print("Perdiste...");
                 break;
         }
-        /*if (collision.gameObject.CompareTag("ColisionSegura"))
-        {
-            print("Colision segura...");
-        }
-        if (collision.gameObject.CompareTag("ColisionPeligrosa"))
-        {
-            print("Colision peligrosa...");
-        }*/
+
     }
 
     private void ProcesarInput()
     {
         Propulsar();
         Rotar();
+
+        if (vida <= 0)
+        {
+            print("Fin del juego");
+        }
     }
 
     private void Propulsar()
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidbody.freezeRotation = true;
-            //print("Propulsor...");
-            rigidbody.AddRelativeForce(Vector3.up);
+            if (combustible > 0) {
+                rigidbody.freezeRotation = true;
+                combustible -= Time.deltaTime * 10.0f;
+                rigidbody.AddRelativeForce(Vector3.up);
+            }
+            else {
+                combustible = 0f;
+            }
+            
             if (!audiosource.isPlaying)
             {
                 audiosource.Play();
@@ -70,6 +84,7 @@ public class ControlNave : MonoBehaviour
         {
             audiosource.Stop();
         }
+
         rigidbody.freezeRotation = false;
     }
     
