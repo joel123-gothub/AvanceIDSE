@@ -37,8 +37,19 @@ public class ControlNave : MonoBehaviour
             case "ColisionSegura":
                 print("Colision segura...");
                 break;
-            case "ColisionPeligrosa":
+            case "Enemy":
                 vida -= 25;
+                var posInicial= transform.position; //volviendo a la posicion de inicio
+                posInicial.x = -21.5f;
+                posInicial.y = 7.63f;
+                posInicial.z = 0f;
+                transform.position = posInicial;
+                var rotInicial= transform.rotation; //volviendo a cero rotaciones
+                rotInicial.x = 0f;
+                rotInicial.y = 0f;
+                rotInicial.z = 0f;
+                transform.rotation = rotInicial;
+                print("Colision con asteroide...");
                 break;
             case "Combustible":
                 combustible += 25f;
